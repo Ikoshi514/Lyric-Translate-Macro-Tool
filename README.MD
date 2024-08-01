@@ -105,18 +105,18 @@ https://gall.dcinside.com/mgallery/board/view/?id=teamshanghaialice&no=962530
 
 버전 로그
 ---
-# version 1
+### version 1
 2024/04/26
 txt 파일에 줄바꿈마다 <br> 태그를 자동 작성하는 기능 제공.
 <define> 태그와 macro, raw 속성 제공.
 csv에 메타 정보를 기입하면 매크로 변환과 함께 곡 정보를 적는 기능 제공.
 
-# version 2
+### version 2
 <define> 태그에 template 속성 및 함께 사용하는 args 속성 제공.
 문법 검사를 느슨하게 변경.
 options.py에 추가 옵션 제공. 자세한 내용은 [해당 파일][OPTIONS_DIR] 내의 주석 참조.
 
-# version 3(예정)
+### version 3(예정)
 <pragma/> 태그 제공.
 
 
