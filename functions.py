@@ -1,5 +1,7 @@
 from options import *
 from typing import NoReturn, TextIO
+import re
+
 
 def WrapQuote(text:str) -> str:
     return f"\"{text}\""
@@ -58,6 +60,14 @@ def fopen_s(__Filename:str) -> TextIO:
 
     return __File
 
+
+def DoRegex(pattern:str, string:str, function = re.findall):
+    return function(pattern, string, re.DOTALL)
+
+def RemoveLeftSpace(string:str) -> str:
+    return re.match(r"[\n\s\t]*(.*)", string)[1]
+
+
 class MetaWrite:
     @staticmethod
     def Title(__File:TextIO, __key:str, __ko:str, __jp:str):
@@ -79,4 +89,8 @@ class MetaWrite:
 <embed src="https://www.youtube.com/v/{__key}?version=3" type="application/x-shockwave-flash" width="560" height="315" allowfullscreen="true"></div>\
 <a class="yt_link" href="https://youtu.be/{__key}" target="_blank">https://youtu.be/{__key}</a></div></p>""")
 
-__all__ = ["PrintErrorMessage", "WrongMacro", "GetFileName", "fopen_s"]
+__all__ = [
+    "PrintErrorMessage", "WrongMacro", "GetFileName", "fopen_s",
+    "DoRegex", "RemoveLeftSpace",
+    "MetaWrite",
+]

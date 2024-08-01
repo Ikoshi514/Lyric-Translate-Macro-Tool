@@ -9,6 +9,10 @@ _TargetFName = f"{_FName}.{KRFILE_EXTENSION}"
 IFS = fopen_s(_OriginFName)
 OFS = open(_TargetFName, "wt", encoding=ENCODE)
 
+OFS.write("""<define raw="　"> </define>
+<define raw="  ">&nbsp;&nbsp;</define>
+""")
+
 for text in IFS:
     text = text.rstrip("\n")
     if text == "":

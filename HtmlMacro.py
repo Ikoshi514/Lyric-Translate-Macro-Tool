@@ -1,9 +1,8 @@
 from options import *
 from functions import *
-from functions import MetaWrite
 import csv
-from typing import Dict, Tuple
-from types import LambdaType
+import re
+from typing import Dict, List, Tuple
 
 
 _FName = GetFileName()
@@ -12,7 +11,11 @@ _TargetFName = f"{_FName}.{COMPILED_EXTENSION}"
 
 IFS = fopen_s(_OriginFName)
 OFS = open(_TargetFName, "wt", encoding=ENCODE)
+sfile = IFS.read()
+IFS.close()
 
+
+# Write meta info
 if USE_META:
     _CsvFName = f"{_FName}.{METAFILE_EXTENSION}"
     CSV = fopen_s(_CsvFName)
@@ -42,63 +45,62 @@ if USE_META:
     CSV.close()
 
 
-Defines:Dict[str, str] = dict()
-_Macro:str
-_ChangeTo:str
-_MacroCreating = False
+# Handle macro/raw
+for info in DoRegex(
+    r"(<define[\s\n]+(macro|raw)[\s\n]*=[\s\n]*['\"](.+?)['\"][\s\n]*>(.*?)</define[\s\n]*>)",
+    sfile
+    ):
+    # info[0]: all define text
+    # info[1]: define type
+    # info[2]: macro indentifier
+    # info[3]: macro content
+    sfile = sfile.replace(info[0], "", 1)
+    if (info[1] == "macro"):
+        sfile = sfile.replace(f"%{info[2]}%", info[3])
+    elif (info[1] == "raw"):
+        sfile = sfile.replace(info[2], info[3])
 
-def __Clear():
-    global _Macro, _ChangeTo, _MacroCreating, Defines
-    _ChangeTo = _ChangeTo.replace("\n", "")
-    _ChangeTo = _ChangeTo.rsplit("</define>")[0]
-    for macro in Defines.items():
-        _ChangeTo = _ChangeTo.replace(*macro)
-    Defines.setdefault(_Macro, _ChangeTo)
-    _Macro = ""
-    _ChangeTo = ""
-    _MacroCreating = False
+# Handle template
+for info in DoRegex(
+    r"(<define[\s\n]+template[\s\n]*=[\s\n]*['\"](.+?)['\"][\s\n]*args[\s\n]*=[\s\n]*['\"](.+?)['\"][\s\n]*>(.*?)</define[\s\n]*>)",
+    sfile
+    ):
+    # info[0]: all define text
+    # info[1]: template indentifier
+    # info[2]: template args
+    # info[3]: template content
+    info:List[str]
+    sfile = sfile.replace(info[0], "", 1)
+    params = [RemoveLeftSpace(s) for s in info[2].split(",")]
 
-for text in IFS:
-    try:
-        if (_MacroCreating):
-            _ChangeTo += text
-            if ("</define>" in _ChangeTo):
-                __Clear()
-            continue
+    for callee in re.findall(rf"(%{info[1]}[\s\n]*\((.+?)\)%)", sfile):
+        # callee[0]: all call text
+        # callee[1]: args
+        callee:List[str]
+        args = [RemoveLeftSpace(s) for s in callee[1].split(",")]
+        new = info[3]
+        for i in range(len(args)):
+            new = new.replace(params[i], args[i])
+        sfile = sfile.replace(callee[0], new, 1)
 
-        # <define macro="foo">bar</macro>
-        if ("<define " in text):
-            __macropos:int
-            __namming:LambdaType
-            __stringpair:str
-            if ("macro=" in text):
-                __macropos = text.find("macro=") + 7
-                __stringpair = text[__macropos - 1]
-                __namming = lambda s: f"%{s}%"
-            elif ("raw=" in text):
-                __macropos = text.find("raw=") + 5
-                __stringpair = text[__macropos - 1]
-                __namming = lambda s: s
-            else:
-                raise
-            __macroend = text.find(__stringpair, __macropos)
-            _Macro = __namming(text[__macropos:__macroend])
-            _ChangeTopos = text.find(">", __macroend) + 1
-            _ChangeTo = text[_ChangeTopos:]
-            if ("</define>" in _ChangeTo):
-                __Clear()
-                continue
-            else:
-                _MacroCreating = True
-                continue
 
-        for macro in Defines.items():
-            text = text.replace(*macro)
-        OFS.write(text)
-    except:
-        WrongMacro(text)
+# Remove by options
+if REMOVE_ANNOTATION:
+    for annotation in DoRegex(r"<!--.+?-->", sfile):
+        sfile = sfile.replace(annotation, '', 1)
 
-IFS.close()
+if REMOVE_NEWLINE:
+    sfile = sfile.replace("\n", "")
+else:
+    if COMPRESS_NEWLINE:
+        while(sfile.find("\n\n") != -1):
+            sfile = sfile.replace("\n\n", "\n")
+    if COMPRESS_BREAK:
+        for brline in re.findall(f"(\n({BREAK_TAG_STYLE})+\n)", sfile):
+            sfile = sfile.replace(brline[0], brline[0].lstrip("\n"))
+
+
+OFS.write(sfile)
 OFS.close()
 
 input("Done")
