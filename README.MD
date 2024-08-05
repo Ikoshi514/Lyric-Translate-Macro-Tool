@@ -16,13 +16,15 @@ Python<br>
 속성으로 갖는 것에 따라 어떤 방식으로 사용할지 결정됨.
 
 - macro
+
 %로 둘러싸인 매크로로 변경됨.
-e.g.) &lt;define macro="후랑도루"&gt;플랑드르&lt;/define&gt;
-위의 매크로는 '%후랑도루%후랑도루'를 '플랑드르후랑도루'로 변경해줌.
+e.g.) &lt;define macro="후랑도루"&gt;플랑드르&lt;/define&gt;<br>
+위의 매크로는 '%후랑도루%후랑도루'를 '플랑드르후랑도루'로 변경해줌.<br>
 
 - raw
-그대로 매크로가 됨.
-e.g.) &lt;define raw="꺼이싷"&gt;코이시&lt;/define&gt;
+
+그대로 매크로가 됨.<br>
+e.g.) &lt;define raw="꺼이싷"&gt;코이시&lt;/define&gt;<br>
 위의 매크로는 '%꺼이싷%꺼이싷'을 '%코이시%코이시'로 변경해줌.
 
 
