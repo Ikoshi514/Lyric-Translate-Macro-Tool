@@ -47,42 +47,40 @@ if USE_META:
 
 # Handle macro/raw
 while (info := DoRegex(
-    r".*?(<define[\s\n]+(macro|raw)[\s\n]*=[\s\n]*['\"](.+?)['\"][\s\n]*>(.*?)</define[\s\n]*>)",
+    r"<define[\s\n]+(macro|raw)[\s\n]*=[\s\n]*['\"](.+?)['\"][\s\n]*>(.*?)</define[\s\n]*>",
     sfile,
-    re.match
+    re.search
     )):
-    # info[0]: garbage
-    # info[1]: all define text
-    # info[2]: define type
-    # info[3]: macro indentifier
-    # info[4]: macro content
-    sfile = sfile.replace(info[1], "", 1)
-    if (info[2] == "macro"):
-        sfile = sfile.replace(f"%{info[3]}%", info[4])
-    elif (info[2] == "raw"):
-        sfile = sfile.replace(info[3], info[4])
+    # info[0]: all define text
+    # info[1]: define type
+    # info[2]: macro indentifier
+    # info[3]: macro content
+    sfile = sfile.replace(info[0], "", 1)
+    if (info[1] == "macro"):
+        sfile = sfile.replace(f"%{info[2]}%", info[3])
+    elif (info[1] == "raw"):
+        sfile = sfile.replace(info[2], info[3])
 
 # Handle template
 while (info := DoRegex(
-    r".*?(<define[\s\n]+template[\s\n]*=[\s\n]*['\"](.+?)['\"][\s\n]*args[\s\n]*=[\s\n]*['\"](.+?)['\"][\s\n]*>(.*?)</define[\s\n]*>)",
+    r"<define[\s\n]+template[\s\n]*=[\s\n]*['\"](.+?)['\"][\s\n]*args[\s\n]*=[\s\n]*['\"](.+?)['\"][\s\n]*>(.*?)</define[\s\n]*>",
     sfile,
-    re.match
+    re.search
     )):
-    # info[0]: garbage
-    # info[1]: all define text
-    # info[2]: template indentifier
-    # info[3]: template args
-    # info[4]: template content
+    # info[0]: all define text
+    # info[1]: template indentifier
+    # info[2]: template args
+    # info[3]: template content
     info:List[str]
-    sfile = sfile.replace(info[1], "", 1)
-    params = [RemoveLeftSpace(s) for s in info[3].split(",")]
+    sfile = sfile.replace(info[0], "", 1)
+    params = [RemoveLeftSpace(s) for s in info[2].split(",")]
 
-    for callee in re.findall(rf"(%{info[2]}[\s\n]*\((.+?)\)%)", sfile):
+    for callee in re.findall(rf"(%{info[1]}[\s\n]*\((.+?)\)%)", sfile):
         # callee[0]: all call text
         # callee[1]: args
         callee:List[str]
         args = [RemoveLeftSpace(s) for s in callee[1].split(",")]
-        new = info[4]
+        new = info[3]
         for i in range(len(args)):
             new = new.replace(params[i], args[i])
         sfile = sfile.replace(callee[0], new, 1)
