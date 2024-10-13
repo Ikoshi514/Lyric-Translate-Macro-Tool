@@ -1,5 +1,6 @@
 from options import *
 from functions import *
+from pronunciations import hira_kata_gana
 
 
 _FName = GetFileName()
@@ -10,8 +11,23 @@ IFS = fopen_s(_OriginFName)
 OFS = open(_TargetFName, "wt", encoding=ENCODE)
 
 OFS.write("""<define raw="　"> </define>
-<define raw="  ">&nbsp;&nbsp;</define>
 """)
+
+
+if MAKE_SUBTITLES:
+    def write(jp:str, pn:str = "",/):
+        if (pn):
+            OFS.write(f"<lyrics end=\"\">\n{jp}<br>\n{pn}<br>\n(KR)\n</lyrics><br><br>\n")
+        else:
+            OFS.write(f"<lyrics end=\"\">\n{jp}<br>\n(KR)\n</lyrics><br><br>\n")
+else:
+    def write(jp:str, pn:str = "",/):
+        if (pn):
+            OFS.write(f"{jp}<br>\n{pn}<br>\n(KR)\n<br><br>\n")
+        else:
+            OFS.write(f"{jp}<br>\n(KR)\n<br><br>\n")
+
+
 
 for text in IFS:
     text = text.rstrip("\n")
@@ -23,12 +39,9 @@ for text in IFS:
     for i in range(32, 127):
         temp = temp.replace(chr(i), "")
 
-    if temp == "":
-        OFS.write(f"{text}<br>\n(KR)<br>\n<br>\n")
-    else:
-        OFS.write(f"{text}<br>\n(PR)<br>\n(KR)<br>\n<br>\n")
+    write(text, temp.translate(hira_kata_gana))
 
 IFS.close()
 OFS.close()
 
-input("Done")
+printexit("Done")
