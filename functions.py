@@ -168,9 +168,10 @@ def WriteTemplate(s:str, identifier:str, params:list[str], content:str, mytype:s
         # callee[0]: all call text
         # callee[1]: args
         args = [RemoveLeftSpace(arg) for arg in callee[1].split(",")]
+        instance = content
         for i in range(len(args)):
-            content = content.replace(params[i], args[i])
-        s = s.replace(callee[0], content, 1)
+            instance = instance.replace(params[i], args[i])
+        s = s.replace(callee[0], instance, 1)
     return s
 
 def WriteDefine(s:str, attrs:dict[str,str], content:str, mytype:str):

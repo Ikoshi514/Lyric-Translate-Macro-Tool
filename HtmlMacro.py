@@ -35,6 +35,9 @@ while (pragma := RegEx.Pragma.search(sfile)):
     elif (HasItems(attrs, "tag", "value")):
         _DefaultTag[attrs["tag"]] = attrs["value"]
 
+    elif ("order" in attrs):
+        options["META_ORDER"] = eval(attrs["order"])
+
     else:
         WrongPragma("", pragma[0])
 
@@ -61,17 +64,17 @@ if options["MAKE_HTML"] and options["USE_META"]:
 
     OFS.write("<div>")
 
-    for k in META_ORDER[0]:
-        if _Dict.get(k) == None:
+    for k in options["META_ORDER"][0]:
+        if _Dict.get(k) is None:
             continue
         MetaWrite.Title(OFS, k, *_Dict[k])
     BreakLine()
-    for k in META_ORDER[1]:
-        if _Dict.get(k) == None:
+    for k in options["META_ORDER"][1]:
+        if _Dict.get(k) is None:
             continue
         MetaWrite.Artist(OFS, k, *_Dict[k])
-    if _Dict.get(META_ORDER[2]) != None:
-        _YTInfoList.insert(0, ("", *_Dict[META_ORDER[2]]))
+    if _Dict.get(options["META_ORDER"][2]) is not None:
+        _YTInfoList.insert(0, ("", *_Dict[options["META_ORDER"][2]]))
 
     for _YtInfo in _YTInfoList:
         MetaWrite.YoutubeLink(OFS, *_YtInfo)

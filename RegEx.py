@@ -36,8 +36,8 @@ SubtitlesLoop = re.compile(r"(?P<TIME><timeblock.*?/>)|(?P<LYRICS><lyrics.*?>.*?
 HtmlSubtitlesRemove = re.compile(r"<timeblock.*?/>|</?lyrics.*?>", re.S)
 
 
-Lyric_JPK = re.compile(r"^\n?(?P<JP>.+?)<br>\n?(?P<PN>.+?)<br>\n?(?P<KR>.+?)(?:<br>)?\n?$")
-Lyric_EK = re.compile(r"^\n?(?P<EN>.+?)<br>\n?(?P<KR>.+?)(?:<br>)?\n?$")
+Lyric_JPK = re.compile(r"^\n*(?P<JP>.+?)<br>\n*(?P<PN>.+?)<br>\n*(?P<KR>.+?)(?:<br>)?\n*$")
+Lyric_EK = re.compile(r"^\n*(?P<EN>.+?)<br>\n*(?P<KR>.+?)(?:<br>)?\n*$")
 
 
 FileDispatch = re.compile(r"<(?P<FTYPE>html|subtitles)[\s\n\t]*>(?P<CONTENT>.*?)</(?P=FTYPE)[\s\n\t]*>", re.S)
