@@ -179,7 +179,7 @@ def WriteDefine(s:str, attrs:dict[str,str], content:str, mytype:str):
         return WriteMacro(s, f"%{attrs["macro"]}%", content, mytype)
     elif ("raw" in attrs):
         return WriteMacro(s, attrs["raw"], content, mytype)
-    elif (HasItems("template", "args")):
+    elif (HasItems(attrs, "template", "args")):
         params = [RemoveLeftSpace(s) for s in attrs["args"].split(",")]
         return WriteTemplate(s, attrs["template"], params, content, mytype)
     else:

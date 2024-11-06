@@ -25,11 +25,11 @@ if (m := re.match(r"^<setoptions[\s\n\t]+(.+?)>$", sfile, re.S | re.M)):
         globals()[key] = ParseValue(val)
 
 
-OFS.write(f"""<pragma option="MAKE_SUBTITLES" value="{MAKE_SUBTITLES}"/>
-<pragma option="SUBTITLES_EXTENSION" value="ass"/>
-""")
+OFS.write(f"""<pragma order="{META_ORDER}"/>
+<pragma option="MAKE_SUBTITLES" value="{MAKE_SUBTITLES}"/>\n""")
 
 if MAKE_SUBTITLES:
+    OFS.write("""<pragma option="SUBTITLES_EXTENSION" value="ass"/>\n""")
     def write(jp:str, pn:str,/):
         if (pn.isascii()):
             OFS.write(f"<lyrics end=\"\">\n{jp}<br>\n(KR)\n</lyrics><br><br>\n")
