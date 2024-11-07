@@ -14,7 +14,7 @@ def NormalTag(tag:str, hasattr:bool = True):
 
 
 Attr = re.compile(r"[\s\n\t]*(?P<NAME>.*?)[\s\n\t]*=[\s\n\t]*(?P<QUOTE>['\"])(?P<VALUE>.*?)(?P=QUOTE)", re.S)
-LeftSpace = re.compile(r"[\s\n\t]*(.*)")
+LeftSpace = re.compile(r"[\s\n\t]*(.*)", re.S)
 Define = re.compile(r"<define[\s\n\t]+(?P<ATTR>.+?['\"])[\s\n\t]*>(?P<CONTENT>.*?)</define[\s\n\t]*>", re.S)
 Pragma = SelfClosingTag(r"pragma")
 TimeBlock = SelfClosingTag(r"timeblock")

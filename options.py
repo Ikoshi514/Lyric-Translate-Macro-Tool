@@ -24,10 +24,11 @@ COMPRESS_BREAK = True
 # csv 테이블을 사용한 곡 정보 자동 작성 사용
 USE_META = True
 # [(곡명 정보), (아티스트 정보), (영상 재생 키)]
+# [tuple[str,...], tuple[str,...], str|None|Unbound]
 META_ORDER = [("곡명", "원곡"), ("서클", "보컬", "편곡", "작사", "기타", "일러스트", "영상"), "키"]
 
-# colorless - spacelectro
-# META_ORDER = [("곡명", "원곡"), ("서클", "작사", "보컬", "일러스트", "영상"), "키"]
+# 역자 태그 리스트
+TAGS:list[str] = []
 
 
 # HtmlMacro를 통해서 .html 파일을 만들지 여부

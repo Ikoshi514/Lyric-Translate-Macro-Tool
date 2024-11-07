@@ -164,7 +164,7 @@ def WriteMacro(s:str, identifier:str, content:str, mytype:str):
 
 def WriteTemplate(s:str, identifier:str, params:list[str], content:str, mytype:str):
     content = FileDispatch(content, mytype)
-    for callee in re.finditer(f"%{identifier}"r"[\s\n\t]*\((.+?)\)%", s):
+    for callee in re.finditer(f"%{identifier}"r"[\s\n\t]*\((.+?)\)%", s, re.S):
         # callee[0]: all call text
         # callee[1]: args
         args = [RemoveLeftSpace(arg) for arg in callee[1].split(",")]
@@ -224,6 +224,11 @@ class MetaWrite:
     @staticmethod
     def Artist(__File:TextIO, __key:str, __ko:str, __jp:str):
         MetaWrite.Title(__File, __key, __ko, __jp)
+
+    @staticmethod
+    def Tags(__Files:TextIO, __Tags:list[str]):
+        if (__Tags):
+            __Files.write(f"<br>역자 태그: #{" #".join(__Tags)}<br>")
 
     @staticmethod
     def YoutubeLink(__File:TextIO, __Desc:str, __ko:str, __jp:str):

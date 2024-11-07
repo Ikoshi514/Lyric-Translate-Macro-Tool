@@ -2,8 +2,6 @@ from options import __dict__ as options
 from options import *
 from functions import *
 import csv
-import re
-from math import ceil
 from typing import Dict, List, Tuple
 import RegEx
 import Subtitles
@@ -37,6 +35,9 @@ while (pragma := RegEx.Pragma.search(sfile)):
 
     elif ("order" in attrs):
         options["META_ORDER"] = eval(attrs["order"])
+
+    elif ("tags" in attrs):
+        options["TAGS"] = [RemoveLeftSpace(s) for s in attrs["tags"].split(",")]
 
     else:
         WrongPragma("", pragma[0])
@@ -75,6 +76,8 @@ if options["MAKE_HTML"] and options["USE_META"]:
         MetaWrite.Artist(OFS, k, *_Dict[k])
     if _Dict.get(options["META_ORDER"][2]) is not None:
         _YTInfoList.insert(0, ("", *_Dict[options["META_ORDER"][2]]))
+
+    MetaWrite.Tags(OFS, options["TAGS"])
 
     for _YtInfo in _YTInfoList:
         MetaWrite.YoutubeLink(OFS, *_YtInfo)
