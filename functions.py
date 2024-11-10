@@ -167,7 +167,7 @@ def WriteTemplate(s:str, identifier:str, params:list[str], content:str, mytype:s
     for callee in re.finditer(f"%{identifier}"r"[\s\n\t]*\((.+?)\)%", s, re.S):
         # callee[0]: all call text
         # callee[1]: args
-        args = [RemoveLeftSpace(arg) for arg in callee[1].split(",")]
+        args = [RemoveLeftSpace(arg) for arg in callee[1].split(",")] if len(params) > 1 else [callee[1]]
         instance = content
         for i in range(len(args)):
             instance = instance.replace(params[i], args[i])
